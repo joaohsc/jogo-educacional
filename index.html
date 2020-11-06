@@ -4,16 +4,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>p5.js example</title>
-  <style>
-    body {
-      padding: 0;
-      margin: 0;
-    }
-  </style>
+  <title>Feira da Fruta</title>
   <script src="static/p5.js"></script>
   <script src="static/addons/p5.sound.min.js"></script>
   <script src="static/sketch.js"></script>
+  <style>
+    body {
+      background-image: url('/media/wood_bg.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin:0;      
+    }
+    main {
+      height: 100vh;
+      display:flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      border-radius: 5px;
+      box-shadow: 5px 5px 3px 3px rgba(0, 0, 0, 0.315);
+    }
+  </style>
 </head>
 
 <body>
