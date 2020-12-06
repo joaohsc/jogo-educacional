@@ -5,7 +5,6 @@ function setup() {
   bg_menu = loadImage('media/menu_bg.png');
   bg_creditos = loadImage('media/Créditos.png');
   bg_instrucao = loadImage('media/instruções.png')
-  bg_instrucao = loadImage('media/instruções.png')
   bg_go_success = loadImage('media/bg-gameover-success.png')
   bg_go_erro = loadImage('media/bg-gameover-erro.png')
   bg_jogo = loadImage('media/bg-jogo.png')
