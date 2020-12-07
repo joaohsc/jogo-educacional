@@ -1,6 +1,6 @@
 var tela = 1;
 var bg_instrucao, bg_menu, bg_creditos, bg_go_success, bg_go_erro, bg_jogo;
-
+var hover_sound;
 // variáveis do jogo
 var pontos = 0;
 var nivel = 1;
@@ -36,17 +36,21 @@ function preload() {
   cest_pera = loadImage('media/cesta-pera.png')
   cest_maca = loadImage('media/cesta-maca.png')
   cest_laranja = loadImage('media/cesta-laranja.png')
+
+  soundFormats('mp3', 'ogg');
+  hover_sound = loadSound('media/sound/hover_sound');
 }
 
 function setup() {
-  createCanvas(768, 500);
+  createCanvas(1080, 703);
+  frameRate(60)
   jogo_calculo()
 }
 
 function draw() {
   // tela do menu
   // trocar
-  if (tela == 1) {
+  if (tela == 4) {
     background(bg_menu);
     menu_botao(311, 217, 146, 60.31, 'Iniciar', 255);
     menu_botao(311, 297, 146, 60.31, 'Informações', 335);
@@ -64,7 +68,7 @@ function draw() {
   }
   // Jogo
   // trocar
-  else if (tela == 4) {
+  else if (tela == 1) {
     jogo_principal()
   }
   // gameover sucesso
@@ -135,21 +139,21 @@ function jogo_principal() {
 
     // cestas
     textSize(30)
-    image(cesta_fruta['imagem'], 340, 65)
-    text(numero_a + ' ' + operacoes[nivel - 1] + ' ? ', 355, 200)
-    image(cesta_fruta['imagem'], 510, 65)
-    text(resultado, 555, 200)
+    textAlign(CENTER)
+    image(cesta_fruta['imagem'], 490, 120)
+    text(numero_a + ' ' + operacoes[nivel - 1] + ' ? ', 545, 270)
+    image(cesta_fruta['imagem'], 760, 120)
+    text(resultado, 815, 270)
 
-    // imagens
-    
-    var frutax = 260
-    var frutay = 285
-    var numeroy = 360
-
+    // frutas   
+    var frutax = 415
+    var frutay = 420
+    var numeroy = 510
     for(i=0; i<frutas_list.length; i++){
-      jogo_fruta(frutas_list[i].imagem, frutax, frutay, frutax+15, numeroy, frutas_list[i].valor)
-      frutax+=122
+      jogo_fruta(frutas_list[i].imagem, frutax, frutay, frutax+22, numeroy, frutas_list[i].valor)
+      frutax+=155
     }
+    
   }
 }
 
@@ -157,16 +161,9 @@ function jogo_calculo() {
   numero_a = parseInt(random(1, 100))
   numero_b = parseInt(random(1, 100))
 
-  if (nivel == 1) {
-    resultado = numero_a + numero_b
-  } else if (nivel == 2) {
-    resultado = numero_a - numero_b
-  } else if (nivel == 3) {
-    resultado = numero_a * numero_b
-  } else if (nivel == 4) {
-    resultado = numero_a / numero_b
-  }
+  resultado = calcular_valores(nivel, numero_a, numero_b)
 
+  console.log(numero_b);
   fruta_random = random(frutas_vetor)
   recuperar_cesta_fruta_imagem(fruta_random);
   
@@ -188,6 +185,19 @@ function jogo_calculo() {
     }
 
     frutas_list.push(fruta_obj)
+  }
+}
+
+function calcular_valores(nivel, a, b){
+  switch(nivel){
+    case 1:
+      return a+b;
+    case 2:
+      return a-b;
+    case 3:
+      return a*b;
+    case 4:
+      return a/b
   }
 }
 
@@ -226,49 +236,61 @@ function recuperar_cesta_fruta_imagem(nome) {
 }
 
 function jogo_fruta(fruta, x, y, textox, textoy, valor) {
-  largura = 100
-  altura = 100
-  if (mouseX > x && mouseX < (x + largura)
-    && mouseY > y && mouseY < (y + altura)) {
+  largura = 150
+  altura = 130
+  if (mouseX > (x-(largura/3)) && mouseX < (x + ((largura/4)*3))
+    && mouseY > (y-(altura/3)) && mouseY < (y + ((altura/4)*3))) {
+    // hover_sound.play()
     cursor(HAND);
-    noFill();
-    stroke(240);
-    strokeWeight(4);
-    rect(x, y, largura, altura, 100);
+    var limiteFruta = y-20
+    var limiteTexto = textoy-20
+    while(y>limiteFruta && textoy>limiteTexto){      
+      y = y-1
+      textoy = textoy-1      
+    }
+
     mouseClicked = function () {
-      calc_teste = numero_a + valor
-      if (resultado == calc_teste) {
+      hover_sound.play()      
+      if (numero_b == valor) {
         pontos += 500;
         cesta_fruta = {};
         frutas_list = [];
+        jogo_placar()
         jogo_calculo();
       }
     };
   }
-  textSize(20)
+  
+  textSize(30)
   fill(240)
+  textAlign(CENTER)
   noStroke();
   image(fruta, x, y)
-  text(valor, textox, textoy)
+  text(valor, textox, textoy)  
 }
 
 function jogo_placar() {
   fill(240)
   noStroke();
-  textSize(20)
+  textAlign(LEFT)
+  textSize(30)
   textStyle(BOLD);
   cursor(ARROW)
 
   //tempo
-  text(tempo[nivel - 1], 680, 50)
+  text(tempo[nivel - 1], 960, 70)
   // nível
-  text(nivel, 110, 62)
+  text(nivel, 150, 85)
   // tentativas
   recuperar_tentativas(vidas)
   // Pontuação
-  text(pontos, 60, 238)
+  text(pontos, 90, 335)
+  atualizar_nivel()
 
-  if (pontos > barreira_pontos) {
+}
+
+function atualizar_nivel(){
+  if (pontos >= barreira_pontos) {
     nivel += 1;
     barreira_pontos += 1000;
   }
@@ -282,9 +304,9 @@ function restar_placar() {
 }
 
 function recuperar_tentativas(vidas) {
-  var x = 60
+  var x = 80
   for (i = 0; i < vidas; i++) {
-    image(maca_vida, x, 125)
+    image(maca_vida, x, 175)
     x += 40
   }
 }
