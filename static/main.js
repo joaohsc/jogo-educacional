@@ -28,8 +28,8 @@ let message_elem;
 function preload() {
   //Backgrounds
   bg_menu = loadImage('media/menu_bg.png');
-  bg_creditos = loadImage('media/Créditos.png');
-  bg_instrucao = loadImage('media/instruções.png')
+  bg_creditos = loadImage('media/creditos.png');
+  bg_instrucao = loadImage('media/instrucoes.png')
   bg_go_success = loadImage('media/bg-gameover-success.png')
   bg_go_erro = loadImage('media/bg-gameover-erro.png')
   bg_jogo = loadImage('media/bg-jogo.png')
@@ -50,6 +50,10 @@ function preload() {
   soundFormats('mp3', 'ogg');
   wrong_sound = loadSound('media/sound/wrong');
   correct_sound = loadSound('media/sound/correct');
+  menu_sound = createAudio('media/sound/menu_sound.mp3');
+  ingame_sound = createAudio('media/sound/ingame_sound.mp3');
+  loose_sound = createAudio('media/sound/loose_sound.mp3');
+  win_sound = createAudio('media/sound/win_sound.mp3');
 }
 
 function setup() {
@@ -63,7 +67,11 @@ function draw() {
   // tela do menu
   // trocar
   if (tela == 1) {
-    cursor(ARROW)
+    win_sound.stop()
+    loose_sound.stop()
+    ingame_sound.stop()
+    menu_sound.loop()
+    cursor(ARROW)    
     background(bg_menu);
     xmenu=465;
     largura=146; 
@@ -76,53 +84,37 @@ function draw() {
   else if (tela == 2) {
     cursor(ARROW)
     background(bg_instrucao);
-    btn_trocar_tela('Voltar',840,500, 1, 146, 60)
+    btn_trocar_tela('Voltar',816,590, 1, 146, 60)
   }
   // credito
   else if (tela == 3) {
     cursor(ARROW)
     background(bg_creditos);
-    btn_trocar_tela('Voltar',840,500, 1, 146, 60)
+    btn_trocar_tela('Voltar',816,595, 1, 146, 60)
   }
   // Jogo
   // trocar
   else if (tela == 4) {
+    win_sound.stop()
+    loose_sound.stop()
+    menu_sound.stop()
+    ingame_sound.loop()
     jogo_principal()
   }
   // gameover sucesso
   else if (tela == 5) {
+    ingame_sound.stop()
+    win_sound.loop()
     background(bg_go_success);
     game_over()
   }
   // gameover Falha
   else if (tela == 6) {
+    ingame_sound.stop()
+    loose_sound.loop()
     background(bg_go_erro);
     game_over()
   }
-}
-
-function menu_voltar() {
-  x = 540
-  y = 340
-  largura = 146
-  altura = 60.31
-  // evento de hover
-  colorText = 240
-  if (mouseX > x && mouseX < (x + largura) && mouseY > y && mouseY < (y + altura)) {
-    stroke(200);
-    fill('#853e3a');
-    rect(x, y, largura, altura, 15);
-    if (mouseIsPressed) {
-      tela = 1;
-    }
-  }
-  // texto do botão
-  textAlign(CENTER);
-  textSize(20);
-  fill(colorText);
-  noStroke();
-  textStyle(BOLD);
-  text('Voltar', 612, 378)
 }
 
 function btn_trocar_tela(texto,x,y, cod_tela, largura, altura) {
@@ -159,7 +151,7 @@ function game_over(){
   fill(240)
   text(nivel, 280, 400)
   // Pontuação
-  text(pontos, 620, 400)
+  text(pontos, 640, 400)
   largura = 200 
   altura = 80
   btn_trocar_tela('Jogar novamente',250,580, 4, largura, altura);
@@ -168,12 +160,14 @@ function game_over(){
 
 //funções principais
 function jogo_principal() {
+  cursor(ARROW)
   background(bg_jogo);
 
   if (nivel > 4) {
-    tela = 5
+    nivel--;
+    tela = 5;
   } else if (vidas == 0) {
-    tela = 6
+    tela = 6;
   } else {    
     btn_trocar_tela('Finalizar',82,535, 1, 146, 60)    
     jogo_placar();
@@ -350,8 +344,7 @@ function jogo_placar() {
 
   textAlign(LEFT)
   textSize(30)
-  textStyle(BOLD);
-  cursor(ARROW)
+  textStyle(BOLD); 
 
   //tempo
   color_tempo=240
