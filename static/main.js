@@ -209,7 +209,14 @@ function jogo_principal() {
       segundos = parseInt(contador_tempo / 30)
       tempo_atual = tempo_vetor[nivel - 1] - segundos
       if (tempo_atual == 0) {
+        console.log('chegou');
         vidas--;
+        wrong_sound.play();
+        message_elem.classList.add('alerta__falha');
+        message_elem.innerText = 'O tempo acabou';
+        setTimeout(function () { message_elem.classList.remove('alerta__falha'); }, 2000);
+        contador_tempo = 0;
+        tempo_atual = 0;
       }
     }
   }
