@@ -1,4 +1,4 @@
-var tela = 1;
+var tela = 7;
 var bg_instrucao, bg_menu, bg_creditos, bg_go_success, bg_go_erro, bg_jogo;
 var hover_sound;
 // variáveis do jogo
@@ -27,6 +27,7 @@ let message_elem;
 
 function preload() {
   //Backgrounds
+  bg_menu_click = loadImage('media/menu_click.png');
   bg_menu = loadImage('media/menu_bg.png');
   bg_creditos = loadImage('media/creditos.png');
   bg_instrucao = loadImage('media/instrucoes.png')
@@ -114,6 +115,21 @@ function draw() {
     loose_sound.loop()
     background(bg_go_erro);
     game_over()
+  } 
+  else if(tela== 7){
+    cursor(HAND);
+    background(bg_menu_click);
+    textAlign(CENTER);
+    textSize(30);
+    fill(240);
+    noStroke();
+    textStyle(BOLD);
+    text('Clique na tela para continuar...', 540, 400)
+    mouseClicked = function () {
+      if(tela==7){
+        tela=1;
+      }      
+    }
   }
 }
 
